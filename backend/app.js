@@ -1,9 +1,24 @@
+require('dotenv').config();
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
+const mongoose = require('mongoose');
+
+const CONNECTION_STRING = process.env.MONGO_DB_CONNECTION_STRING;
+
+// setup connection to mongo
+mongoose.connect(CONNECTION_STRING);
+const db = mongoose.connection;
+
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
+
+// recover from errors
+db.on('error', console.error.bind(console, 'connection error:'));
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
